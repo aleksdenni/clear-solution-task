@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final @Value("${min.user.age}") String MIN_USER_AGE;
+    private final String MIN_USER_AGE = "18";  //@Value("${min.user.age}")
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -35,12 +35,16 @@ public class UserService {
         return userRepository.findByBirthDate(fromDate, toDate);
     }
 
-    public UserResponseDto patchUser(String email, UserRequestDto userRequestDto) {
-        return null;
+    public UserResponseDto patchUser(String email, UserRequestDto userRequest) {
+        final User user = userMapper.toModel(userRequest);
+        final User savedUser = userRepository.patch(user, email);
+        return userMapper.toResponseDto(savedUser);
     }
 
-    public UserResponseDto updateUser(String email, UserRequestDto userRequestDto) {
-        return null;
+    public UserResponseDto updateUser(String email, UserRequestDto userRequest) {
+        final User user = userMapper.toModel(userRequest);
+        final User savedUser = userRepository.update(user, email);
+        return userMapper.toResponseDto(savedUser);
     }
 
     public void deleteUser(String email) {
