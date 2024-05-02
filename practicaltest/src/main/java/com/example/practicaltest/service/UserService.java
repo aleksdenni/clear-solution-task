@@ -1,5 +1,6 @@
 package com.example.practicaltest.service;
 
+import com.example.practicaltest.dto.request.PatchUserRequestDto;
 import com.example.practicaltest.dto.request.UserRequestDto;
 import com.example.practicaltest.dto.response.UserResponseDto;
 import com.example.practicaltest.mapper.UserMapper;
@@ -35,9 +36,8 @@ public class UserService {
         return userRepository.findByBirthDate(fromDate, toDate);
     }
 
-    public UserResponseDto patchUser(String email, UserRequestDto userRequest) {
-        final User user = userMapper.toModel(userRequest);
-        final User savedUser = userRepository.patch(user, email);
+    public UserResponseDto patchUser(String email, PatchUserRequestDto patchUserRequestDto) {
+        final User savedUser = userRepository.patch(patchUserRequestDto, email);
         return userMapper.toResponseDto(savedUser);
     }
 

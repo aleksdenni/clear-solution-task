@@ -1,5 +1,6 @@
 package com.example.practicaltest.controller;
 
+import com.example.practicaltest.dto.request.PatchUserRequestDto;
 import com.example.practicaltest.dto.request.UserRequestDto;
 import com.example.practicaltest.dto.response.UserResponseDto;
 import com.example.practicaltest.model.User;
@@ -32,8 +33,8 @@ public class UserController {
     }
 
     @PatchMapping("/{email}")
-    public UserResponseDto patchUser(@PathVariable String email, @RequestBody UserRequestDto userRequestDto){
-        return userService.patchUser(email, userRequestDto);
+    public UserResponseDto patchUser(@PathVariable String email, @RequestBody PatchUserRequestDto patchUserRequestDto){
+        return userService.patchUser(email, patchUserRequestDto);
     }
 
     @PutMapping("/{email}")

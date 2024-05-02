@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class UserRequestDto {
 
-    @NotBlank
+    @NotEmpty
     @Email(regexp = "^(?=.{10,63}$)(?!.*\\s)"
             + "[a-zA-Z0-9!#$%&'*+\\-=?^_`{|}~]+"
             + "(?:[.\\-][a-zA-Z0-9!#$%&'*+\\-=?^_`{|}~]+)*"
@@ -20,12 +20,12 @@ public class UserRequestDto {
             message = "Email should be valid")
     String email;
 
-    @NotBlank String firstName;
+    @NotEmpty String firstName;
 
-    @NotBlank String lastName;
+    @NotEmpty String lastName;
 
     @Past
-    @NotNull LocalDate birthDate;
+    @NotEmpty LocalDate birthDate;
 
     String address;
 

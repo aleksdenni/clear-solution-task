@@ -1,5 +1,6 @@
 package com.example.practicaltest.repository;
 
+import com.example.practicaltest.dto.request.PatchUserRequestDto;
 import com.example.practicaltest.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,7 +57,7 @@ public class UserRepository {
         return userFound; //ResponseEntity.status(HttpStatus.ACCEPTED).body(userFound);
     }
 
-    public User patch(User user, String email) {
+    public User patch(PatchUserRequestDto patchUser, String email) {
         User userFound = findByEmail(email);
         String userEmail;
         String firstName;
@@ -64,22 +65,22 @@ public class UserRepository {
         LocalDate birthDate;
         String address;
         String phoneNumber;
-        if ((userEmail = user.getEmail()) != null) {
+        if ((userEmail = patchUser.getEmail()) != null) {
             userFound.setEmail(userEmail);
         }
-        if ((firstName = user.getFirstName()) != null) {
+        if ((firstName = patchUser.getFirstName()) != null) {
             userFound.setFirstName(firstName);
         }
-        if ((lastName = user.getLastName()) != null) {
+        if ((lastName = patchUser.getLastName()) != null) {
             userFound.setLastName(lastName);
         }
-        if ((birthDate = user.getBirthDate()) != null) {
+        if ((birthDate = patchUser.getBirthDate()) != null) {
             userFound.setBirthDate(birthDate);
         }
-        if ((address = user.getAddress()) != null) {
+        if ((address = patchUser.getAddress()) != null) {
             userFound.setAddress(address);
         }
-        if ((phoneNumber = user.getPhoneNumber()) != null) {
+        if ((phoneNumber = patchUser.getPhoneNumber()) != null) {
             userFound.setPhoneNumber(phoneNumber);
         }
         return userFound;
