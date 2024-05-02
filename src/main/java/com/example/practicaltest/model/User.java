@@ -22,7 +22,7 @@ public class User {
     private String lastName;
 
     @Past
-    @NotEmpty
+    @NotNull
     private LocalDate birthDate;
 
     private String address;

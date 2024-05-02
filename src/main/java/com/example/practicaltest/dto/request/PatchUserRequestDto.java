@@ -2,6 +2,7 @@ package com.example.practicaltest.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -25,8 +26,8 @@ public class PatchUserRequestDto {
     @NotBlank
     String lastName;
 
-    @Past
-    @NotBlank
+    @Past(message = "Birth date should be valid")
+    @NotNull
     LocalDate birthDate;
 
     @NotBlank

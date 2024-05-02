@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 @Value
@@ -25,7 +26,8 @@ public class UserRequestDto {
     @NotEmpty String lastName;
 
     @Past
-    @NotEmpty LocalDate birthDate;
+    @NotNull
+    LocalDate birthDate;
 
     String address;
 
