@@ -19,12 +19,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final String MIN_USER_AGE = "18";  //@Value("${min.user.age}")
-
+    @Value("${min.user.age}")
+    private String MIN_USER_AGE;
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+
     public UserResponseDto createUser(UserRequestDto userRequest) {
-        if (LocalDate.now().minusYears(Integer.parseInt(MIN_USER_AGE)).isBefore(userRequest.getBirthDate())){
+        if (LocalDate.now().minusYears(Integer.parseInt(MIN_USER_AGE)).isBefore(userRequest.getBirthDate())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         final User user = userMapper.toModel(userRequest);
@@ -48,5 +49,6 @@ public class UserService {
     }
 
     public void deleteUser(String email) {
+        userRepository.delete(email);
     }
 }
