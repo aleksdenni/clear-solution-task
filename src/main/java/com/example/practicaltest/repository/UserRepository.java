@@ -55,7 +55,7 @@ public class UserRepository {
         int indexUserFound = users.indexOf(findByEmail(email));
         user.setEmail(email); // you can't change your email
         users.set(indexUserFound, user);
-        return users.get(indexUserFound); //ResponseEntity.status(HttpStatus.ACCEPTED).body(userFound);
+        return users.get(indexUserFound); // ResponseEntity.status(HttpStatus.ACCEPTED).body(userFound);
     }
 
     public User patch(PatchUserRequestDto patchUser, String email) {
@@ -63,7 +63,7 @@ public class UserRepository {
         String userEmail;
         String firstName;
         String lastName;
-//        LocalDate birthDate;
+        LocalDate birthDate;
         String address;
         String phoneNumber;
         if ((userEmail = patchUser.getEmail()) != null) {
@@ -75,9 +75,9 @@ public class UserRepository {
         if ((lastName = patchUser.getLastName()) != null) {
             userFound.setLastName(lastName);
         }
-/*        if ((birthDate = patchUser.getBirthDate()) != null) {
+        if ((birthDate = patchUser.getBirthDate()) != null) {
             userFound.setBirthDate(birthDate);
-        }*/
+        }
         if ((address = patchUser.getAddress()) != null) {
             userFound.setAddress(address);
         }

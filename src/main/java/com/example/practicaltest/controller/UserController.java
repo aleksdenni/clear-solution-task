@@ -7,6 +7,7 @@ import com.example.practicaltest.model.User;
 import com.example.practicaltest.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,23 +23,23 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserResponseDto createUser(@RequestBody @Valid UserRequestDto userRequest) {
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid UserRequestDto userRequest) {
         return userService.createUser(userRequest);
     }
 
     @GetMapping("/search")
-    public List<User> getUsers(@RequestParam LocalDate fromBirthDate,
+    public ResponseEntity<List<User>> getUsers(@RequestParam LocalDate fromBirthDate,
                                @RequestParam LocalDate toBirthDate) {
         return userService.getUsers(fromBirthDate, toBirthDate);
     }
 
     @PatchMapping("/{email}")
-    public UserResponseDto patchUser(@PathVariable String email, @RequestBody PatchUserRequestDto patchUserRequestDto){
+    public ResponseEntity<UserResponseDto> patchUser(@PathVariable String email, @RequestBody PatchUserRequestDto patchUserRequestDto){
         return userService.patchUser(email, patchUserRequestDto);
     }
 
     @PutMapping("/{email}")
-    public UserResponseDto updateUser(@PathVariable String email, @Valid @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable String email, @Valid @RequestBody UserRequestDto userRequestDto) {
         return userService.updateUser(email, userRequestDto);
     }
 

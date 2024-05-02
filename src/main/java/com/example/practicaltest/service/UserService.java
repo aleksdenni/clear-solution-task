@@ -9,6 +9,7 @@ import com.example.practicaltest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,28 +25,34 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
-    public UserResponseDto createUser(UserRequestDto userRequest) {
+    public ResponseEntity<UserResponseDto> createUser(UserRequestDto userRequest) {
         if (LocalDate.now().minusYears(Integer.parseInt(MIN_USER_AGE)).isBefore(userRequest.getBirthDate())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         final User user = userMapper.toModel(userRequest);
         final User savedUser = userRepository.save(user);
-        return userMapper.toResponseDto(savedUser);
+        UserResponseDto createdUser = userMapper.toResponseDto(savedUser);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(createdUser);
     }
 
-    public List<User> getUsers(LocalDate fromDate, LocalDate toDate) {
-        return userRepository.findByBirthDate(fromDate, toDate);
+    public ResponseEntity<List<User>> getUsers(LocalDate fromDate, LocalDate toDate) {
+        List<User> foundUsers = userRepository.findByBirthDate(fromDate, toDate);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(foundUsers);
     }
 
-    public UserResponseDto patchUser(String email, PatchUserRequestDto patchUserRequestDto) {
+    public ResponseEntity<UserResponseDto> patchUser(String email, PatchUserRequestDto patchUserRequestDto) {
         final User savedUser = userRepository.patch(patchUserRequestDto, email);
-        return userMapper.toResponseDto(savedUser);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(userMapper.toResponseDto(savedUser));
     }
 
-    public UserResponseDto updateUser(String email, UserRequestDto userRequest) {
+    public ResponseEntity<UserResponseDto> updateUser(String email, UserRequestDto userRequest) {
         final User user = userMapper.toModel(userRequest);
         final User savedUser = userRepository.update(user, email);
-        return userMapper.toResponseDto(savedUser);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(userMapper.toResponseDto(savedUser));
     }
 
     public void deleteUser(String email) {
