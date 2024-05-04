@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PatchMapping("/{email}")
-    public ResponseEntity<UserResponseDto> patchUser(@PathVariable String email, @RequestBody PatchUserRequestDto patchUserRequestDto){
+    public ResponseEntity<UserResponseDto> patchUser(@PathVariable String email, @Valid @RequestBody PatchUserRequestDto patchUserRequestDto){
         return userService.patchUser(email, patchUserRequestDto);
     }
 
