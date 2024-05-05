@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class testsTest {
+class UserRepositoryTest {
 
     private UserRepository userRepository;
 
@@ -26,8 +26,8 @@ class testsTest {
     public void setUp() {
         userRepository = new UserRepository();
 
-        User user = User.builder()
-                .email("test@example.com")
+        user = User.builder()
+                .email("test@email.com")
                 .firstName("testName")
                 .lastName("testLastName")
                 .birthDate(LocalDate.of(2000, 1, 1))
@@ -38,32 +38,16 @@ class testsTest {
 
     @Test
     void testSaveUser() {
-        User user = User.builder()
-                .email("test@example.com")
-                .firstName("testName")
-                .lastName("testLastName")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .address("testAddress 123")
-                .phoneNumber("012-345-67-89")
-                .build();
 
         User savedUser = userRepository.save(user);
 
         assertNotNull(savedUser);
-        assertEquals("test@example.com", savedUser.getEmail());
+        assertEquals("test@email.com", savedUser.getEmail());
         assertEquals(1, userRepository.getUsers().size());
     }
 
     @Test
     void testSaveUserWhenUserIsAlreadyExists() {
-        User user = User.builder()
-                .email("test@example.com")
-                .firstName("testName")
-                .lastName("testLastName")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .address("testAddress 123")
-                .phoneNumber("012-345-67-89")
-                .build();
 
         userRepository.save(user);
 
@@ -73,45 +57,11 @@ class testsTest {
     }
 
     @Test
-    void testDeleteUser() {
-        User user = User.builder()
-                .email("test@example.com")
-                .firstName("testName")
-                .lastName("testLastName")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .address("testAddress 123")
-                .phoneNumber("012-345-67-89")
-                .build();
-
-        userRepository.save(user);
-
-        assertDoesNotThrow(() -> {
-            userRepository.delete("test@example.com");
-        });
-
-        assertEquals(0, userRepository.getUsers().size());
-    }
-
-    @Test
-    void testDeleteUserWhenUserIsNotFound() {
-        assertThrows(ResponseStatusException.class, () -> {
-            userRepository.delete("unknown@example.com");
-        });
-    }
-
-    @Test
     void testFindByBirthDate() {
-        User user1 = User.builder()
-                .email("test@example.com")
-                .firstName("testName")
-                .lastName("testLastName")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .address("testAddress 123")
-                .phoneNumber("012-345-67-89")
-                .build();
+        User user1 = user;
 
         User user2 = User.builder()
-                .email("test2@example.com")
+                .email("test2@email.com")
                 .firstName("secondTestName")
                 .lastName("secondTestLastName")
                 .birthDate(LocalDate.of(1995, 1, 1))
@@ -132,45 +82,8 @@ class testsTest {
     }
 
     @Test
-    void testUpdateUser() {
-        User existingUser = User.builder()
-                .email("test@example.com")
-                .firstName("testName")
-                .lastName("testLastName")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .address("testAddress 123")
-                .phoneNumber("012-345-67-89")
-                .build();
-
-        userRepository.save(existingUser);
-
-        User newUser = User.builder()
-                .email("test@example.com")
-                .firstName("UpdatedFirstName")
-                .lastName("UpdatedLastName")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .address("testAddress 123")
-                .phoneNumber("012-345-67-89")
-                .build();
-
-        User updatedUser = userRepository.update(newUser, "test@example.com");
-
-        assertNotNull(updatedUser);
-        assertEquals("UpdatedFirstName", updatedUser.getFirstName());
-    }
-
-    @Test
     void testPatchUser() {
-        User existingUser = User.builder()
-                .email("test@example.com")
-                .firstName("testName")
-                .lastName("testLastName")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .address("testAddress 123")
-                .phoneNumber("012-345-67-89")
-                .build();
-
-        userRepository.save(existingUser);
+        User existingUser = user;
 
         PatchUserRequestDto patchRequest = PatchUserRequestDto.builder()
                 .firstName("UpdatedFirstName")
@@ -180,10 +93,52 @@ class testsTest {
                 .phoneNumber("012-345-67-89")
                 .build();
 
-        User patchedUser = userRepository.patch(patchRequest, "test@example.com");
+        userRepository.save(existingUser);
+
+        User patchedUser = userRepository.patch(patchRequest, "test@email.com");
 
         assertNotNull(patchedUser);
         assertEquals("UpdatedFirstName", patchedUser.getFirstName());
         assertEquals("UpdatedLastName", patchedUser.getLastName());
+    }
+
+    @Test
+    void testUpdateUser() {
+        User existingUser = user;
+
+        userRepository.save(existingUser);
+
+        User newUser = User.builder()
+                .email("test@email.com")
+                .firstName("UpdatedFirstName")
+                .lastName("UpdatedLastName")
+                .birthDate(LocalDate.of(2000, 1, 1))
+                .address("testAddress 123")
+                .phoneNumber("012-345-67-89")
+                .build();
+
+        User updatedUser = userRepository.update(newUser, "test@email.com");
+
+        assertNotNull(updatedUser);
+        assertEquals("UpdatedFirstName", updatedUser.getFirstName());
+    }
+
+    @Test
+    void testDeleteUser() {
+
+        userRepository.save(user);
+
+        assertDoesNotThrow(() -> {
+            userRepository.delete("test@email.com");
+        });
+
+        assertEquals(0, userRepository.getUsers().size());
+    }
+
+    @Test
+    void testDeleteUserWhenUserIsNotFound() {
+        assertThrows(ResponseStatusException.class, () -> {
+            userRepository.delete("unknown@email.com");
+        });
     }
 }
