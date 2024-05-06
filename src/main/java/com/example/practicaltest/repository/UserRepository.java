@@ -1,6 +1,5 @@
 package com.example.practicaltest.repository;
 
-import com.example.practicaltest.dto.request.PatchUserRequestDto;
 import com.example.practicaltest.model.User;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -49,33 +48,36 @@ public class UserRepository {
                         HttpStatus.NOT_FOUND, "User with email " + email + " not found"));
     }
 
-    public User update(String email, User user) {
+    public User update(String email, User newUserData) {
+        if (!email.equals(newUserData.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, " you can't change your email ");
+        }
         int indexFoundUser = users.indexOf(findByEmail(email));
-        user.setEmail(email); // you can't change your email
-        users.set(indexFoundUser, user);
+        users.set(indexFoundUser, newUserData);
         return users.get(indexFoundUser);
     }
 
-    public User patch(String email, PatchUserRequestDto patchUser) {
+    public User patch(String email, User newUserData) {
         User foundUser = findByEmail(email);
+        newUserData.setEmail(email); // you can't change your email
         String firstName;
         String lastName;
         LocalDate birthDate;
         String address;
         String phoneNumber;
-        if ((firstName = patchUser.getFirstName()) != null) {
+        if ((firstName = newUserData.getFirstName()) != null) {
             foundUser.setFirstName(firstName);
         }
-        if ((lastName = patchUser.getLastName()) != null) {
+        if ((lastName = newUserData.getLastName()) != null) {
             foundUser.setLastName(lastName);
         }
-        if ((birthDate = patchUser.getBirthDate()) != null) {
+        if ((birthDate = newUserData.getBirthDate()) != null) {
             foundUser.setBirthDate(birthDate);
         }
-        if ((address = patchUser.getAddress()) != null) {
+        if ((address = newUserData.getAddress()) != null) {
             foundUser.setAddress(address);
         }
-        if ((phoneNumber = patchUser.getPhoneNumber()) != null) {
+        if ((phoneNumber = newUserData.getPhoneNumber()) != null) {
             foundUser.setPhoneNumber(phoneNumber);
         }
         return foundUser;
