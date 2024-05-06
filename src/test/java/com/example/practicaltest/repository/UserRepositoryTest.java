@@ -83,7 +83,8 @@ class UserRepositoryTest {
     void testPatchUser() {
         User existingUser = user;
 
-        PatchUserRequestDto patchRequest = PatchUserRequestDto.builder()
+        User newUser = User.builder()
+                .email("test@email.com")
                 .firstName("UpdatedFirstName")
                 .lastName("UpdatedLastName")
                 .birthDate(LocalDate.of(2000, 1, 1))
@@ -93,7 +94,7 @@ class UserRepositoryTest {
 
         userRepository.save(existingUser);
 
-        User patchedUser = userRepository.patch("test@email.com", patchRequest);
+        User patchedUser = userRepository.patch("test@email.com", newUser);
 
         assertNotNull(patchedUser);
         assertEquals("UpdatedFirstName", patchedUser.getFirstName());
