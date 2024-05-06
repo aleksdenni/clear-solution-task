@@ -1,10 +1,12 @@
 package com.example.practicaltest.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 @Value
@@ -12,7 +14,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class UserRequestDto {
 
-    @NotEmpty
+    @NotEmpty()
     @Email(regexp = "^(?=.{10,63}$)(?!.*\\s)"
             + "[a-zA-Z0-9!#$%&'*+\\-=?^_`{|}~]+"
             + "(?:[.\\-][a-zA-Z0-9!#$%&'*+\\-=?^_`{|}~]+)*"
