@@ -35,7 +35,7 @@ public class UserService {
     }
 
     /**
-     * @param email               email of the user being updated
+     * @param email email of the user being updated
      * @param patchUserRequestDto new data of the user without email
      *                            and with changeable fields for patch
      * @return patched user
@@ -65,7 +65,7 @@ public class UserService {
         userRepository.delete(email);
     }
 
-    public void checkAgeOfMajority(LocalDate birthDate) {
+    private void checkAgeOfMajority(LocalDate birthDate) {
         if (birthDate == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Must be valid date");
