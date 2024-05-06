@@ -36,7 +36,7 @@ public class UserController {
         if (fromBirthDate.isAfter(toBirthDate)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(userService.getUsers(fromBirthDate, toBirthDate));
     }
 

@@ -112,7 +112,7 @@ class UserControllerTest {
         mockMvc.perform(get(baseUri + "/search")
                         .param("fromBirthDate", "1999-01-01")
                         .param("toBirthDate", "2001-01-01"))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()",equalTo(1)))
                 .andExpect(jsonPath("$[0].email").value("test@email.com"));
     }
