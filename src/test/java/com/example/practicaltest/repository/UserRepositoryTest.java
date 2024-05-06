@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserRepositoryTest {
 
     private UserRepository userRepository;
-
     private User user;
 
     @BeforeEach
@@ -51,9 +50,8 @@ class UserRepositoryTest {
 
         userRepository.save(user);
 
-        assertThrows(ResponseStatusException.class, () -> {
-            userRepository.save(user);
-        });
+        assertThrows(ResponseStatusException.class, ()
+                -> userRepository.save(user));
     }
 
     @Test
@@ -95,7 +93,7 @@ class UserRepositoryTest {
 
         userRepository.save(existingUser);
 
-        User patchedUser = userRepository.patch(patchRequest, "test@email.com");
+        User patchedUser = userRepository.patch("test@email.com", patchRequest);
 
         assertNotNull(patchedUser);
         assertEquals("UpdatedFirstName", patchedUser.getFirstName());
@@ -117,7 +115,7 @@ class UserRepositoryTest {
                 .phoneNumber("012-345-67-89")
                 .build();
 
-        User updatedUser = userRepository.update(newUser, "test@email.com");
+        User updatedUser = userRepository.update("test@email.com", newUser);
 
         assertNotNull(updatedUser);
         assertEquals("UpdatedFirstName", updatedUser.getFirstName());
@@ -137,8 +135,9 @@ class UserRepositoryTest {
 
     @Test
     void testDeleteUserWhenUserIsNotFound() {
-        assertThrows(ResponseStatusException.class, () -> {
-            userRepository.delete("unknown@email.com");
-        });
+        userRepository.save(user);
+
+        assertThrows(ResponseStatusException.class, ()
+                -> userRepository.delete("unknown@email.com"));
     }
 }

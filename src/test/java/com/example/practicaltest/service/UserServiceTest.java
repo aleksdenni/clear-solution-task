@@ -13,12 +13,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,50 +86,55 @@ class UserServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponseDto(any(User.class))).thenReturn(userResponse);
 
-        ResponseEntity<UserResponseDto> response = userService.createUser(userRequest);
+        UserResponseDto response = userService.createUser(userRequest);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("test@email.com", response.getBody().getEmail());
+        assertNotNull(response);
+        assertEquals("test@email.com", response.getEmail());
     }
 
     @Test
     void getUsers() {
-        List<User> users = Arrays.asList(user);
+        List<User> users = List.of(user);
 
         when(userRepository.findByBirthDate(any(LocalDate.class), any(LocalDate.class)))
                 .thenReturn(users);
 
-        ResponseEntity<List<User>> response = userService.getUsers(
+        List<User> response = userService.getUsers(
                 LocalDate.of(1999, 1, 1),
                 LocalDate.of(2000, 1, 1));
 
-        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
+        assertNotNull(response);
+        assertEquals(1, response.size());
     }
 
     @Test
     void testPatchUser() {
+        user.setFirstName(patchUserRequestDto.getFirstName());
+
         when(userMapper.toResponseDto(any(User.class))).thenReturn(userResponse);
-        when(userRepository.patch(any(PatchUserRequestDto.class), any(String.class)))
+        when(userRepository.patch(anyString(), any(PatchUserRequestDto.class)))
                 .thenReturn(user);
 
-        ResponseEntity<UserResponseDto> actualPatchUserResult = userService
-                .patchUser(userResponse.getEmail(), patchUserRequestDto);
+        assertDoesNotThrow(()
+                -> userService.patchUser(userResponse.getEmail(), patchUserRequestDto));
 
-        assertTrue(actualPatchUserResult.hasBody());
-        assertTrue(actualPatchUserResult.getHeaders().isEmpty());
-        assertEquals(HttpStatus.ACCEPTED, actualPatchUserResult.getStatusCode());
-        verify(userMapper).toResponseDto(any(User.class));
-        verify(userRepository).patch(any(PatchUserRequestDto.class), any(String.class));
+        verify(userMapper).toResponseDto(user);
+        verify(userRepository).patch(userResponse.getEmail(), patchUserRequestDto);
+        verify(userRepository, times(1)).patch(userResponse.getEmail(), patchUserRequestDto);
+
+        assertNotNull(user);
+        assertEquals("patchedTestName", user.getFirstName());
+
     }
 
     @Test
     void testUpdateUser() {
-        UserRequestDto userRequest = new UserRequestDto(
-                "test@email.com", "Updated", "Updated", LocalDate.of(2000, 1, 1), null, null
-        );
+        UserRequestDto userRequestForUpdate = UserRequestDto.builder()
+                .email("test@email.com")
+                .firstName("Updated")
+                .lastName("Updated")
+                .birthDate(LocalDate.of(2000, 1, 1))
+                .build();
 
         User updatedUser = User.builder()
                 .email("test@email.com")
@@ -148,14 +151,13 @@ class UserServiceTest {
                 .build();
 
         when(userMapper.toModel(any(UserRequestDto.class))).thenReturn(updatedUser);
-        when(userRepository.update(any(User.class), anyString())).thenReturn(updatedUser);
+        when(userRepository.update(anyString(), any(User.class))).thenReturn(updatedUser);
         when(userMapper.toResponseDto(any(User.class))).thenReturn(responseDto);
 
-        ResponseEntity<UserResponseDto> response = userService.updateUser("test@email.com", userRequest);
+        UserResponseDto response = userService.updateUser("test@email.com", userRequestForUpdate);
 
-        assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Updated", response.getBody().getFirstName());
+        assertNotNull(response);
+        assertEquals("Updated", response.getFirstName());
 
     }
 
@@ -163,9 +165,8 @@ class UserServiceTest {
     void testDeleteUser() {
         when(userRepository.delete("test@email.com")).thenReturn(null);
 
-        assertDoesNotThrow(() -> {
-            userService.deleteUser("test@email.com");
-        });
+        assertDoesNotThrow(()
+                -> userService.deleteUser("test@email.com"));
 
         verify(userRepository, times(1)).delete("test@email.com");
     }
@@ -175,9 +176,8 @@ class UserServiceTest {
         doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND))
                 .when(userRepository).delete("testWrong@email.com");
 
-        assertThrows(ResponseStatusException.class, () -> {
-            userService.deleteUser("testWrong@email.com");
-        });
+        assertThrows(ResponseStatusException.class, ()
+                -> userService.deleteUser("testWrong@email.com"));
     }
 
 }
