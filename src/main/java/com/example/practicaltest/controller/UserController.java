@@ -42,13 +42,13 @@ public class UserController {
 
     @PatchMapping("/{email}")
     public ResponseEntity<UserResponseDto> patchUser(@PathVariable String email, @Valid @RequestBody PatchUserRequestDto patchUserRequestDto){
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(userService.patchUser(email, patchUserRequestDto));
     }
 
     @PutMapping("/{email}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable String email, @Valid @RequestBody UserRequestDto userRequestDto) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.updateUser(email, userRequestDto));
     }
 

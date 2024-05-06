@@ -128,7 +128,7 @@ class UserControllerTest {
         mockMvc.perform(patch(baseUri + "/test@email.com")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(patchRequestJson))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("patchedTestName"));
 
     }
@@ -143,7 +143,7 @@ class UserControllerTest {
         mockMvc.perform(put(baseUri + "/test@email.com")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userRequestJson))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName", equalTo(userRequest.getFirstName())));
     }
 
