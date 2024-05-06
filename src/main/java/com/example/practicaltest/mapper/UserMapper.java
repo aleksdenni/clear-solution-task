@@ -1,5 +1,6 @@
 package com.example.practicaltest.mapper;
 
+import com.example.practicaltest.dto.request.PatchUserRequestDto;
 import com.example.practicaltest.dto.request.UserRequestDto;
 import com.example.practicaltest.dto.response.UserResponseDto;
 import com.example.practicaltest.model.User;
@@ -26,6 +27,16 @@ public class UserMapper {
                 .birthDate(user.getBirthDate())
                 .address(user.getAddress())
                 .phoneNumber(user.getPhoneNumber())
+                .build();
+    }
+
+    public User toModel(PatchUserRequestDto patchUserRequestDto) {
+        return User.builder()
+                .firstName(patchUserRequestDto.getFirstName())
+                .lastName(patchUserRequestDto.getLastName())
+                .birthDate(patchUserRequestDto.getBirthDate())
+                .phoneNumber(patchUserRequestDto.getPhoneNumber())
+                .address(patchUserRequestDto.getAddress())
                 .build();
     }
 }
