@@ -110,20 +110,22 @@ class UserServiceTest {
     @Test
     void testPatchUser() {
         user.setFirstName(patchUserRequestDto.getFirstName());
+        User newUserData = user;
 
+        when(userMapper.toModel(any(PatchUserRequestDto.class))).thenReturn(newUserData);
+        when(userRepository.patch(anyString(), any(User.class)))
+                .thenReturn(newUserData);
         when(userMapper.toResponseDto(any(User.class))).thenReturn(userResponse);
-        when(userRepository.patch(anyString(), any(PatchUserRequestDto.class)))
-                .thenReturn(user);
 
         assertDoesNotThrow(()
                 -> userService.patchUser(userResponse.getEmail(), patchUserRequestDto));
 
         verify(userMapper).toResponseDto(user);
-        verify(userRepository).patch(userResponse.getEmail(), patchUserRequestDto);
-        verify(userRepository, times(1)).patch(userResponse.getEmail(), patchUserRequestDto);
+        verify(userRepository).patch(userResponse.getEmail(), newUserData);
+        verify(userRepository, times(1)).patch(userResponse.getEmail(), newUserData);
 
-        assertNotNull(user);
-        assertEquals("patchedTestName", user.getFirstName());
+        assertNotNull(newUserData);
+        assertEquals("patchedTestName", newUserData.getFirstName());
 
     }
 
@@ -136,28 +138,19 @@ class UserServiceTest {
                 .birthDate(LocalDate.of(2000, 1, 1))
                 .build();
 
-        User updatedUser = User.builder()
-                .email("test@email.com")
-                .firstName("Updated")
-                .lastName("Updated")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .build();
+        user.setFirstName("Updated");
+        user.setLastName("Updated");
+        User newUserData = user;
 
-        UserResponseDto responseDto = UserResponseDto.builder()
-                .email("test@email.com")
-                .firstName("Updated")
-                .lastName("Updated")
-                .birthDate(LocalDate.of(2000, 1, 1))
-                .build();
+        when(userMapper.toModel(any(UserRequestDto.class))).thenReturn(newUserData);
+        when(userRepository.update(anyString(), any(User.class))).thenReturn(newUserData);
+        when(userMapper.toResponseDto(any(User.class))).thenReturn(userResponse);
 
-        when(userMapper.toModel(any(UserRequestDto.class))).thenReturn(updatedUser);
-        when(userRepository.update(anyString(), any(User.class))).thenReturn(updatedUser);
-        when(userMapper.toResponseDto(any(User.class))).thenReturn(responseDto);
+        assertDoesNotThrow(()
+                -> userService.updateUser(userResponse.getEmail(), userRequestForUpdate));
 
-        UserResponseDto response = userService.updateUser("test@email.com", userRequestForUpdate);
-
-        assertNotNull(response);
-        assertEquals("Updated", response.getFirstName());
+        assertNotNull(newUserData);
+        assertEquals("Updated", newUserData.getFirstName());
 
     }
 
