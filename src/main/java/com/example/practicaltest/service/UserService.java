@@ -9,7 +9,6 @@ import com.example.practicaltest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,18 +20,17 @@ import java.util.List;
 public class UserService {
 
     @Value("${min.user.age}")
-    private String MIN_USER_AGE;
+    private String minUserAge;
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
     public UserResponseDto createUser(UserRequestDto userRequest) {
-        if (LocalDate.now().minusYears(Integer.parseInt(MIN_USER_AGE)).isBefore(userRequest.getBirthDate())) {
+        if (LocalDate.now().minusYears(Integer.parseInt(minUserAge)).isBefore(userRequest.getBirthDate())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         final User user = userMapper.toModel(userRequest);
         final User savedUser = userRepository.save(user);
-        UserResponseDto createdUser = userMapper.toResponseDto(savedUser);
-        return createdUser;
+        return userMapper.toResponseDto(savedUser);
     }
 
     public List<User> getUsers(LocalDate fromDate, LocalDate toDate) {
