@@ -49,14 +49,14 @@ public class UserRepository {
                         HttpStatus.NOT_FOUND, "User with email " + email + " not found"));
     }
 
-    public User update(User user, String email) {
+    public User update(String email, User user) {
         int indexFoundUser = users.indexOf(findByEmail(email));
         user.setEmail(email); // you can't change your email
         users.set(indexFoundUser, user);
         return users.get(indexFoundUser);
     }
 
-    public User patch(PatchUserRequestDto patchUser, String email) {
+    public User patch(String email, PatchUserRequestDto patchUser) {
         User foundUser = findByEmail(email);
         String firstName;
         String lastName;
