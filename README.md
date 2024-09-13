@@ -1,1 +1,1 @@
-test task for Clear Solutions
+test task
